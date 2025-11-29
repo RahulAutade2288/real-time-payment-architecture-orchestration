@@ -1,33 +1,39 @@
 package realtimepaymentarchitectureorchestration.iso20022;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * ChargesInformation is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * ChargesInformation is a utility or helper class for ISO 20022-related processing.
  */
 public class ChargesInformation {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
+    private final Map<String, String> properties = new LinkedHashMap<>();
+
     public ChargesInformation() {
-        // TODO: initialize collaborators, configuration, or demo data
+        properties.put("createdAt", OffsetDateTime.now().toString());
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("ChargesInformation demo() invoked at " + Instant.now());
+    public void setProperty(String key, String value) {
+        properties.put(key, value);
+    }
+
+    public String getProperty(String key) {
+        return properties.get(key);
+    }
+
+    public Map<String, String> getAllProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
+
+    public String dumpAsText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ChargesInformation properties:\n");
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            sb.append("  ").append(entry.getKey()).append(" = ").append(entry.getValue()).append('\n');
+        }
+        return sb.toString();
     }
 }

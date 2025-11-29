@@ -5,29 +5,71 @@ import java.util.*;
 
 
 /**
- * ApplicationConfig is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * Simple in-memory configuration holder.
+ * In a real system this would likely be backed by environment variables,
+ * configuration servers, or secure vaults.
  */
 public class ApplicationConfig {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
-    public ApplicationConfig() {
-        // TODO: initialize collaborators, configuration, or demo data
+    private String environmentName;
+    private String profileName;
+    private Instant buildTimestamp;
+    private final Map<String, String> properties = new LinkedHashMap<>();
+
+    public void loadDefaults() {
+        this.environmentName = "local";
+        this.profileName = "demo";
+        this.buildTimestamp = Instant.now();
+
+        properties.put("payments.maxAmount", "100000.00");
+        properties.put("payments.currency.default", "USD");
+        properties.put("fraud.engine.enabled", "true");
+        properties.put("routing.defaultScheme", "INTERNAL_RT");
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("ApplicationConfig demo() invoked at " + Instant.now());
+    public String getEnvironmentName() {
+        return environmentName;
+    }
+
+    public void setEnvironmentName(String environmentName) {
+        this.environmentName = environmentName;
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public Instant getBuildTimestamp() {
+        return buildTimestamp;
+    }
+
+    public void setBuildTimestamp(Instant buildTimestamp) {
+        this.buildTimestamp = buildTimestamp;
+    }
+
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(properties);
+    }
+
+    public String getProperty(String key, String defaultValue) {
+        return properties.getOrDefault(key, defaultValue);
+    }
+
+    public void setProperty(String key, String value) {
+        properties.put(key, value);
+    }
+
+    @Override
+    public String toString() {
+        return "ApplicationConfig{" +
+                "environmentName='" + environmentName + '\'' +
+                ", profileName='" + profileName + '\'' +
+                ", buildTimestamp=" + buildTimestamp +
+                ", properties=" + properties +
+                '}';
     }
 }

@@ -1,33 +1,58 @@
 package realtimepaymentarchitectureorchestration.iso20022;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * Amount is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * Simple representation of an amount and its currency.
  */
 public class Amount {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
+    private BigDecimal amount;
+    private String currency;
+
     public Amount() {
-        // TODO: initialize collaborators, configuration, or demo data
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("Amount demo() invoked at " + Instant.now());
+    public Amount(BigDecimal amount, String currency) {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("amount", amount != null ? amount.toPlainString() : null);
+        map.put("currency", currency);
+        return map;
+    }
+
+    public boolean isPositive() {
+        return amount != null && amount.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Amount{" +
+                "amount=" + amount +
+                ", currency='" + currency + '\'' +
+                '}';
     }
 }

@@ -1,33 +1,79 @@
 package realtimepaymentarchitectureorchestration.iso20022;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * PostalAddress is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * Simplified address used by PartyIdentification.
  */
 public class PostalAddress {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
-    public PostalAddress() {
-        // TODO: initialize collaborators, configuration, or demo data
+    private String country;
+    private String townName;
+    private String streetName;
+    private String buildingNumber;
+    private String postCode;
+
+    public String getCountry() {
+        return country;
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("PostalAddress demo() invoked at " + Instant.now());
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getTownName() {
+        return townName;
+    }
+
+    public void setTownName(String townName) {
+        this.townName = townName;
+    }
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public String getBuildingNumber() {
+        return buildingNumber;
+    }
+
+    public void setBuildingNumber(String buildingNumber) {
+        this.buildingNumber = buildingNumber;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("country", country);
+        map.put("townName", townName);
+        map.put("streetName", streetName);
+        map.put("buildingNumber", buildingNumber);
+        map.put("postCode", postCode);
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        return "PostalAddress{" +
+                "country='" + country + '\'' +
+                ", townName='" + townName + '\'' +
+                ", streetName='" + streetName + '\'' +
+                ", buildingNumber='" + buildingNumber + '\'' +
+                ", postCode='" + postCode + '\'' +
+                '}';
     }
 }

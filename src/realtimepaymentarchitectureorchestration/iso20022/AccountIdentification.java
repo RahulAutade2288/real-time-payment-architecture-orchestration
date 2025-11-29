@@ -1,33 +1,46 @@
 package realtimepaymentarchitectureorchestration.iso20022;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * AccountIdentification is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * Simplified account identification information.
  */
 public class AccountIdentification {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
-    public AccountIdentification() {
-        // TODO: initialize collaborators, configuration, or demo data
+    private String iban;
+    private String accountNumber;
+
+    public String getIban() {
+        return iban;
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("AccountIdentification demo() invoked at " + Instant.now());
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("iban", iban);
+        map.put("accountNumber", accountNumber);
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountIdentification{" +
+                "iban='" + iban + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                '}';
     }
 }

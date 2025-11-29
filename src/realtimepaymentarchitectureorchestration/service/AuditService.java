@@ -1,33 +1,38 @@
 package realtimepaymentarchitectureorchestration.service;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * AuditService is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * AuditService represents a domain service in the reference architecture.
  */
 public class AuditService {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
-    public AuditService() {
-        // TODO: initialize collaborators, configuration, or demo data
+    private final Random random = new Random();
+
+    public String generateCorrelationId() {
+        return "CORR-" + UUID.randomUUID();
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("AuditService demo() invoked at " + Instant.now());
+    public boolean simulateBooleanDecision(double probabilityTrue) {
+        return random.nextDouble() < probabilityTrue;
+    }
+
+    public BigDecimal calculateFee(BigDecimal amount, BigDecimal percentage) {
+        if (amount == null || percentage == null) {
+            return BigDecimal.ZERO;
+        }
+        return amount.multiply(percentage).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void logEvent(String eventType, Map<String, Object> payload) {
+        System.out.println("[" + OffsetDateTime.now() + "] " + eventType);
+        if (payload != null) {
+            for (Map.Entry<String, Object> entry : payload.entrySet()) {
+                System.out.println("  " + entry.getKey() + " = " + entry.getValue());
+            }
+        }
     }
 }

@@ -1,33 +1,54 @@
 package realtimepaymentarchitectureorchestration.iso20022;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * PartyIdentification is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * Simplified representation of a party in an ISO 20022 message.
  */
 public class PartyIdentification {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
+    private String name;
+    private PostalAddress address;
+
     public PartyIdentification() {
-        // TODO: initialize collaborators, configuration, or demo data
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("PartyIdentification demo() invoked at " + Instant.now());
+    public PartyIdentification(String name, PostalAddress address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PostalAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(PostalAddress address) {
+        this.address = address;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", name);
+        map.put("address", address != null ? address.toMap() : null);
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        return "PartyIdentification{" +
+                "name='" + name + '\'' +
+                ", address=" + address +
+                '}';
     }
 }

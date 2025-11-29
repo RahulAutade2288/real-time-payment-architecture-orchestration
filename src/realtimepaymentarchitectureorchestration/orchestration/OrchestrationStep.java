@@ -2,8 +2,7 @@ package realtimepaymentarchitectureorchestration.orchestration;
 
 
 /**
- * Represents the high-level orchestration steps in a real-time payment journey.
- * These values can be used to drive pipelines, workflow engines, or monitoring views.
+ * Canonical steps in the real-time payment lifecycle.
  */
 public enum OrchestrationStep {
     RECEIVE_REQUEST,
@@ -16,5 +15,9 @@ public enum OrchestrationStep {
     POST,
     NOTIFY,
     COMPLETE,
-    ERROR
+    ERROR;
+
+    public boolean isTerminal() {
+        return this == COMPLETE || this == ERROR;
+    }
 }

@@ -5,29 +5,69 @@ import java.util.*;
 
 
 /**
- * OrchestrationResult is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * Represents the outcome of an orchestration run.
  */
 public class OrchestrationResult {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
-    public OrchestrationResult() {
-        // TODO: initialize collaborators, configuration, or demo data
+    public enum Status {
+        SUCCESS,
+        FAILURE
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("OrchestrationResult demo() invoked at " + Instant.now());
+    private final Status status;
+    private final List<String> messages = new ArrayList<>();
+    private final Instant startedAt;
+    private final Instant completedAt;
+
+    public OrchestrationResult(Status status, Instant startedAt, Instant completedAt, Collection<String> messages) {
+        this.status = Objects.requireNonNull(status, "status");
+        this.startedAt = startedAt;
+        this.completedAt = completedAt;
+        if (messages != null) {
+            this.messages.addAll(messages);
+        }
+    }
+
+    public static OrchestrationResult success(Collection<String> messages) {
+        Instant now = Instant.now();
+        return new OrchestrationResult(Status.SUCCESS, now, now, messages);
+    }
+
+    public static OrchestrationResult failure(Collection<String> messages) {
+        Instant now = Instant.now();
+        return new OrchestrationResult(Status.FAILURE, now, now, messages);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public List<String> getMessages() {
+        return Collections.unmodifiableList(messages);
+    }
+
+    public Instant getStartedAt() {
+        return startedAt;
+    }
+
+    public Instant getCompletedAt() {
+        return completedAt;
+    }
+
+    public long getDurationMillis() {
+        if (startedAt == null || completedAt == null) {
+            return -1;
+        }
+        return Duration.between(startedAt, completedAt).toMillis();
+    }
+
+    @Override
+    public String toString() {
+        return "OrchestrationResult{" +
+                "status=" + status +
+                ", messages=" + messages +
+                ", startedAt=" + startedAt +
+                ", completedAt=" + completedAt +
+                '}';
     }
 }

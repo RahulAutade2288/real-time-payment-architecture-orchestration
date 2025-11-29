@@ -1,33 +1,69 @@
 package realtimepaymentarchitectureorchestration.validation;
 
+import java.math.*;
 import java.time.*;
 import java.util.*;
 
 
 /**
- * SanctionsScreeningValidator is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * SanctionsScreeningValidator performs one aspect of payment validation.
  */
 public class SanctionsScreeningValidator {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
-    public SanctionsScreeningValidator() {
-        // TODO: initialize collaborators, configuration, or demo data
+    public void validateRequired(String fieldName, String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " is required");
+        }
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("SanctionsScreeningValidator demo() invoked at " + Instant.now());
+    public void validatePositiveAmount(BigDecimal amount) {
+        if (amount == null) {
+            throw new IllegalArgumentException("amount is required");
+        }
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("amount must be positive");
+        }
+    }
+
+    public void validateBusinessHours(Instant timestamp, ZoneId zone) {
+        if (timestamp == null) {
+            return;
+        }
+        ZonedDateTime zdt = timestamp.atZone(zone);
+        int hour = zdt.getHour();
+        if (hour < 6 || hour > 22) {
+            throw new IllegalArgumentException("outside of configured business hours: " + hour);
+        }
+    }
+
+    public void validateCurrency(String currency, Set<String> allowed) {
+        if (!allowed.contains(currency)) {
+            throw new IllegalArgumentException("unsupported currency: " + currency);
+        }
+    }
+
+    public List<String> validateAll(Map<String, Object> paymentMap) {
+        List<String> result = new ArrayList<>();
+        Object amountObj = paymentMap.get("amount");
+        if (amountObj instanceof String) {
+            try {
+                BigDecimal value = new BigDecimal((String) amountObj);
+                validatePositiveAmount(value);
+                result.add("amount: OK");
+            } catch (Exception ex) {
+                result.add("amount: " + ex.getMessage());
+            }
+        } else {
+            result.add("amount: missing or not a String");
+        }
+
+        Object currency = paymentMap.get("currency");
+        if (currency instanceof String) {
+            validateRequired("currency", (String) currency);
+            result.add("currency: OK");
+        } else {
+            result.add("currency: missing or not a String");
+        }
+        return result;
     }
 }

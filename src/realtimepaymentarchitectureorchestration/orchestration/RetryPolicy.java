@@ -5,29 +5,33 @@ import java.util.*;
 
 
 /**
- * RetryPolicy is part of the real-time payment architecture and orchestration reference implementation.
- * <p>
- * This class is intentionally lightweight and framework-agnostic so teams can
- * plug in their own infrastructure (Spring, Jakarta EE, Micronaut, Quarkus, etc.)
- * while reusing the structural ideas.
+ * RetryPolicy is a supporting type in the orchestration layer.
  */
 public class RetryPolicy {
 
-    /**
-     * Creates a new instance with default, illustrative configuration.
-     * Extend or replace this constructor with your own implementation details.
-     */
+    private final Map<String, Object> metadata = new LinkedHashMap<>();
+
     public RetryPolicy() {
-        // TODO: initialize collaborators, configuration, or demo data
+        metadata.put("createdAt", Instant.now());
+        metadata.put("createdBy", "RetryPolicy");
     }
 
-    /**
-     * Example method that can be adapted to your needs.
-     * Replace the method name, parameters, and return type with something meaningful.
-     */
-    public void demo() {
-        // This method is intentionally simple.
-        // Use it as a starting point for real orchestration, routing, validation, or service logic.
-        System.out.println("RetryPolicy demo() invoked at " + Instant.now());
+    public void put(String key, Object value) {
+        metadata.put(key, value);
+    }
+
+    public Optional<Object> get(String key) {
+        return Optional.ofNullable(metadata.get(key));
+    }
+
+    public Map<String, Object> getAll() {
+        return Collections.unmodifiableMap(metadata);
+    }
+
+    public void logState() {
+        System.out.println("RetryPolicy state:");
+        for (Map.Entry<String, Object> entry : metadata.entrySet()) {
+            System.out.println("  " + entry.getKey() + " = " + entry.getValue());
+        }
     }
 }
