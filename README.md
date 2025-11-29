@@ -56,12 +56,8 @@ Reflecting:
 - Enterprise-grade reliability  
 
 ## 🖼 Architecture Diagrams
-![Architecture Dark](diagrams/rtp_architecture_dark.png)
-![Kafka Streaming](diagrams/rtp_kafka_event_streaming.png)
-![E2E Lifecycle](diagrams/rtp_end_to_end_lifecycle.png)
-![Unified Mega Diagram](diagrams/rtp_unified_mega_diagram.png)
-![Layered Architecture](diagrams/rtp_layered_architecture.png)
-![Component Graph](diagrams/rtp_component_dependency_graph.png)
+![RTP_Architecture](diagrams/ARCHBLOG-1180-image-3.png)
+
 
 ## 📂 Project Structure
 ```
