@@ -1,0 +1,43 @@
+@startuml
+title Real-Time Payment Sequence Flow
+
+actor Client
+participant "PaymentOrchestrator" as Orchestrator
+participant "PaymentValidator" as Validator
+participant "FraudCheckService" as FraudService
+participant "PaymentRouter" as Router
+participant "PostingService" as PostingService
+participant "NotificationService" as NotificationService
+participant "EventPublisher" as EventPublisher
+
+Client -> Orchestrator : initiatePayment(request)
+
+Orchestrator -> Validator : validate(request)
+Validator --> Orchestrator : validationResult
+
+alt validation failed
+  Orchestrator -> NotificationService : notifyFailure()
+  Orchestrator -> EventPublisher : publishFailureEvent()
+  Orchestrator --> Client : failureResponse
+else validation succeeded
+  Orchestrator -> FraudService : evaluateRisk(request)
+  FraudService --> Orchestrator : riskDecision
+
+  alt high risk / reject
+    Orchestrator -> NotificationService : notifyRejection()
+    Orchestrator -> EventPublisher : publishRejectedEvent()
+    Orchestrator --> Client : rejectionResponse
+  else approved
+    Orchestrator -> Router : determineRoute(request)
+    Router --> Orchestrator : routeDecision
+
+    Orchestrator -> PostingService : postToLedger(request, routeDecision)
+    PostingService --> Orchestrator : postingResult
+
+    Orchestrator -> NotificationService : notifySuccess()
+    Orchestrator -> EventPublisher : publishCompletedEvent()
+    Orchestrator --> Client : successResponse
+  end
+end
+
+@enduml
