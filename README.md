@@ -1,73 +1,51 @@
+
 # Real-Time Payment Architecture and Orchestration
 
-A reference implementation that demonstrates how modern financial institutions design and orchestrate real-time payment systems. This project focuses on architectural patterns rather than production code, showcasing concepts used in instant payment schemes such as Zelle, RTP®, and FedNow® (without including any client-specific or proprietary information).
+This repository provides a developer-ready skeleton for a real-time payment architecture and orchestration reference implementation.
+It is designed as a clean starting point for experimenting with orchestration, ISO 20022-inspired models, validation, routing,
+and service layers in a digital payments context.
 
-## 1. Overview
-
-This repository models a real-time payment processing architecture with:
-
-- Event-driven microservices and orchestrated workflows  
-- ISO 20022–native payment message handling  
-- Rule-driven routing, fraud and risk checks  
-- Kafka-based streaming for events and notifications  
-- Resilience, observability, and high-availability patterns  
-
-The goal is to provide an **educational and reference blueprint** for architects, engineers, and researchers working in digital banking and payments modernization.
-
-## 2. Key Capabilities
-
-- **Real-time processing pipeline** from API ingestion to posting and notification  
-- **Orchestration engine** to coordinate validation, enrichment, routing, fraud, and settlement steps  
-- **ISO 20022 message modeling** for credit transfer flows (e.g., pacs.008)  
-- **Embedded fraud/risk checks** integrated into the main processing path  
-- **Event-driven design** using Kafka-style topics for audit, alerts, and downstream consumers  
-- **Extensibility** for additional schemes (RTP, FedNow, SEPA Instant, etc.)
-
-## 3. Architecture Overview
-
-At a high level, the flow looks like:
-
-1. **Channel/API Layer**  
-   - Receives payment initiation requests (REST / JSON)  
-   - Performs basic syntactic validation and authentication  
-
-2. **Orchestration Layer**  
-   - Coordinates the end-to-end payment journey  
-   - Invokes validation, enrichment, routing, fraud, posting, and notification components  
-
-3. **Domain Services**  
-   - ISO 20022 transformation and validation  
-   - Limit checks, sanctions/AML hooks (placeholder)  
-   - Fraud and risk scoring (placeholder)  
-   - Core banking / ledger posting adapters  
-
-4. **Event Streaming Layer**  
-   - Publishes payment lifecycle events to Kafka-style topics  
-   - Supports monitoring, analytics, and regulatory/audit reporting  
-
-5. **Observability & Resilience**  
-   - Health checks, timeouts, and retry patterns (modeled at an architectural level)  
-   - Logs and metrics for each stage of the journey  
-
-> **Note:** The implementation in this repository is **illustrative**, focusing on structure, orchestration, and message flow rather than production-grade code or client-specific integrations.
-
-## 4. Repository Structure
+## Project Layout
 
 ```text
-real-time-payment-architecture-orchestration/
-├─ src/
-│  └─ realtimepaymentarchitectureorchestration/
-│      ├─ Application entry point
-│      ├─ Orchestration / coordinator classes
-│      ├─ ISO 20022 model and helper classes
-│      ├─ Sample validators / routers / services
-├─ docs/
-│  ├─ architecture-overview.md
-│  ├─ sequence-flows.md
-│  └─ future-enhancements.md
-├─ diagrams/
-│  ├─ high-level-architecture.puml
-│  └─ payment-sequence-flow.puml
-├─ build.xml
-├─ manifest.mf
-└─ README.md
+src/
+  realtimepaymentarchitectureorchestration/
+    app/                 # Application entry point and configuration
+    orchestration/       # Orchestrators, pipelines, workflow helpers
+    iso20022/            # ISO 20022-inspired models and helpers
+    validation/          # Validators for payments, amounts, sanctions, etc.
+    routing/             # Routing strategies for schemes, banks, currencies
+    service/             # Domain services such as fraud, posting, notifications
+```
+
+All classes are kept intentionally lightweight, framework-agnostic, and well-commented so you can extend them with
+your own business logic, infrastructure, and integrations.
+
+## Getting Started
+
+- Import this project into your IDE as a plain Java project.
+- Open `RealTimePaymentApplication` in the `app` package.
+- Run the `main` method to verify your toolchain.
+- Start wiring real logic into orchestrators, validators, routers, and services.
+
+## Notes
+
+- No external dependencies are required; everything uses the Java standard library.
+- You can easily refactor this into a Maven or Gradle project as needed.
+- The focus is on structure and clarity rather than production-grade completeness.
+
+
+## Framework Extensions
+
+This project also includes additional packages that model framework-style concerns:
+
+- `channel` – channel adapters such as `RestPaymentChannelAdapter`.
+- `config` – flow and pipeline configuration (`FlowDefinition`, `PipelineConfigLoader`).
+- `fraud` – fraud check abstractions and a sample `BasicFraudCheck`.
+- `repository` – in-memory `PaymentRepository` for storing payment records.
+- `resilience` – resilience patterns (`CircuitBreaker`, `DeadLetterQueue`).
+- `observability` – logging and metrics helpers (`PaymentLogger`, `MetricsRegistry`, `CorrelationIds`).
+
+These are intentionally lightweight and technology-agnostic so they can be
+mapped to real implementations (REST, Kafka, databases, observability stacks)
+in production systems.
