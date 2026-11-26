@@ -27,7 +27,6 @@ This codebase is designed for:
 - Banking architects modernizing legacy payment hubs
 - FinTech startups implementing instant rails
 - Researchers & students studying ISO 20022 and real-time systems
-- EB-1A portfolio demonstration of original contributions in FinTech
 
 ## 🎯 Core Objectives
 This framework demonstrates:
@@ -57,10 +56,6 @@ Reflecting:
 
 ## 🖼 Architecture Diagrams
 ![RTP_Architecture](diagrams/Real-time_Payments_RefArch.png)
-
-## 🖼 Orchestration Diagrams
-![RTP_Orchestration](diagrams/ARCHBLOG-1180-image-3.png)
-
 
 ## 📂 Project Structure
 ```
@@ -129,6 +124,7 @@ See **docs/References.md** for a complete list of RTP, ISO 20022, FedNow®, SEPA
 
 ## 👤 Author
 **Rahul Autade**  
-Senior Payments Architect | RTP | ISO 20022 | Core Banking | Event-Driven Systems
+Payments Modernization & Implementation Leader | RTP | ISO 20022 | Event-Driven Systems  
+Portfolio: https://rahulautade2288.github.io/
 
-This project contributes to global real-time payment modernization and demonstrates original architectural work aligned with EB-1A criteria.
+A personal reference project for learning and discussing real-time payment architecture.
