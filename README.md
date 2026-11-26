@@ -1,6 +1,6 @@
 
 # Real-Time Payment Architecture & Orchestration
-A standards-aligned, modular, ISO 20022–native framework for building modern instant payment systems.
+A standards-aligned, modular, ISO 20022-native framework for building modern instant payment systems.
 
 <p align="center">
   <img src="https://img.shields.io/badge/build-passing-brightgreen" />
