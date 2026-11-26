@@ -1,4 +1,4 @@
-# Real-Time Payment Architecture – Overview
+# Real-Time Payment Architecture: Overview
 
 This repository provides a reference implementation of a real-time payment
 architecture and orchestration engine. It includes:
