@@ -1,130 +1,105 @@
-
 # Real-Time Payment Architecture & Orchestration
-A standards-aligned, modular, ISO 20022-native framework for building modern instant payment systems.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/build-passing-brightgreen" />
-  <img src="https://img.shields.io/badge/tests-100%25-success" />
-  <img src="https://img.shields.io/badge/java-17%2B-blue" />
-  <img src="https://img.shields.io/badge/license-MIT-lightgrey" />
-  <img src="https://img.shields.io/badge/status-active-success" />
-</p>
+A Java reference implementation of how a bank can process an instant payment from start to finish: validate it, enrich it, map it to ISO 20022, screen it for fraud, route it, post it to a ledger and notify both parties. Each step is a small, readable component, so you can follow one payment through the whole pipeline.
 
-## 🔷 Overview
-This repository provides a reference architecture and implementation framework for Real-Time Payments (RTP), FedNow®, SEPA Instant, UPI, and ISO 20022-based real-time rails.
+![Layered architecture: channel, orchestration, processing and persistence layers](diagrams/rtp_layered_architecture.png)
 
-It demonstrates how a modern payment system can be structured to support:
-- End-to-end orchestration of real-time credit transfers
-- ISO 20022-native data models (pacs.008, pacs.009, pacs.002, pain.001)
-- Pluggable validation, enrichment, routing, and fraud evaluation
-- Event-driven processing (Kafka-ready pipeline)
-- Resilience (circuit breaker, DLQ, retries)
-- Observability (metrics, structured logs, correlation IDs)
-- Extensible microservices-style payment components
+## What it covers
 
-This codebase is designed for:
-- RTP developers & payments engineers
-- Banking architects modernizing legacy payment hubs
-- FinTech startups implementing instant rails
-- Researchers & students studying ISO 20022 and real-time systems
+- **Orchestration pipeline**: a payment moves through `VALIDATE`, `ENRICH`, `TRANSFORM_TO_ISO20022`, `FRAUD_CHECK`, `ROUTE`, `POST` and `NOTIFY`, with a full audit trail at every step.
+- **ISO 20022 domain model**: credit transfer, parties, accounts, agents, amounts, settlement and remittance information, plus a message factory and an XML serializer.
+- **Validation**: amount, account status, cut-off time, duplicate and sanctions checks behind a common `ValidationRule` interface.
+- **Fraud and risk**: a pluggable fraud check returning approve, review or reject.
+- **Routing**: currency, scheme and bank routers with a fallback strategy (for example USD to an internal real-time rail, EUR to SEPA Instant).
+- **Resilience and observability**: circuit breaker, dead-letter queue, retry policy, saga coordination with compensation, correlation IDs, metrics and structured logging.
+- **RTP rail flows** (`rtp/`): sample flows for an RTP participant covering inbound and outbound messages, limits, liquidity, recalls and returns, request for payment and settlement.
 
-## 🎯 Core Objectives
-This framework demonstrates:
+## Run the demo
 
-### 1. A complete real-time payment orchestration pipeline
-Including:
-- Input validation  
-- ISO 20022 transformation  
-- Fraud/risk evaluation  
-- Routing & workflow selection  
-- Posting to ledger/core  
-- Real-time acknowledgments  
+Requires Java 17 or later. No external libraries are needed for the main code.
 
-### 2. Alignment with global payment standards
-- ISO 20022 schema modeling  
-- TCH RTP® conceptual flows  
-- FedNow® usage guidelines  
-- SEPA Instant processing  
-- UPI-style routing & real-time decisioning  
+```bash
+git clone https://github.com/RahulAutade2288/real-time-payment-architecture-orchestration.git
+cd real-time-payment-architecture-orchestration
 
-### 3. A real-world architecture foundation
-Reflecting:
-- Microservices patterns  
-- Event-driven design  
-- Clean extensibility  
-- Enterprise-grade reliability  
-
-## 🖼 Architecture Diagrams
-![RTP_Architecture](diagrams/Real-time_Payments_RefArch.png)
-
-## 📂 Project Structure
-```
-src/
-└─ realtimepaymentarchitectureorchestration/
-     ├─ app/
-     ├─ orchestration/
-     ├─ iso20022/
-     ├─ validation/
-     ├─ routing/
-     ├─ fraud/
-     ├─ config/
-     ├─ channel/
-     ├─ repository/
-     ├─ resilience/
-     └─ observability/
-docs/
-diagrams/
+find src -name "*.java" -not -path "*/test/*" > sources.txt
+javac -d out @sources.txt
+java -cp out realtimepaymentarchitectureorchestration.app.RealTimePaymentApplication
 ```
 
-## 🚀 Getting Started
+Type `demo` to send a sample payment through the pipeline, `info` to see the configuration, and `quit` to exit. The demo prints every step:
 
-### Requirements
-- Java 17+
-- Maven or Gradle
-
-### Build
-```
-mvn clean install
-```
-
-### Run Demo
-```
-mvn exec:java -Dexec.mainClass="realtimepaymentarchitectureorchestration.app.RealTimePaymentApplication"
+```text
+Demo payment result: SUCCESS
+  - Validation succeeded
+  - Enrichment completed
+  - Transformed into ISO 20022 inspired structure
+  - Fraud check result: APPROVE
+  - Routing decided: INTERNAL_RT
+  - Posted to simulated ledger with id=LEDGER-...
+  - Notifications sent to debtor and creditor (simulated)
 ```
 
-### Run Tests
-```
-mvn test
-```
+JUnit 5 tests for the amount validator, router and orchestrator are in `src/test/java`.
 
-## 🧪 Example Usage
+## Use it from code
+
 ```java
 PaymentOrchestrator orchestrator = new PaymentOrchestrator();
 PaymentChannelAdapter channel = new RestPaymentChannelAdapter(orchestrator);
 
-Map<String, Object> payment = Map.of(
+channel.submitPayment(Map.of(
     "debtorAccount", "12345",
     "creditorAccount", "67890",
     "amount", "250.00",
     "currency", "USD"
-);
-
-channel.submitPayment(payment);
+));
 ```
 
-## 🧭 Roadmap
-- AI-driven fraud scoring  
-- Adaptive routing (cost/performance-based)  
-- Persistent ledger store (PostgreSQL/Mongo)  
-- gRPC low-latency adapter  
-- Full ISO 20022 XML/JSON marshalling  
+## Project layout
 
-## 📘 References
-See **docs/References.md** for a complete list of RTP, ISO 20022, FedNow®, SEPA Instant, UPI, fraud, and architecture references.
+```text
+src/realtimepaymentarchitectureorchestration/
+├── app/            Entry point, configuration, bootstrapper
+├── channel/        Inbound channel adapters
+├── config/         Flow and pipeline definitions
+├── orchestration/  Pipeline, lifecycle, saga, retry, workflow registry
+├── iso20022/       ISO 20022 domain model and serialization
+├── validation/     Validation rules
+├── fraud/          Fraud check and decisions
+├── routing/        Currency, scheme and bank routing
+├── service/        Ledger, posting, notification, audit, risk services
+├── repository/     In-memory payment repository
+├── resilience/     Circuit breaker, dead-letter queue
+├── observability/  Correlation IDs, metrics, logging
+└── rtp/            RTP rail flows
+diagrams/           Architecture, sequence and flow diagrams (PNG and PlantUML)
+docs/               Architecture notes and references
+```
 
-## 👤 Author
-**Rahul Autade**  
-Payments Modernization & Implementation Leader | RTP | ISO 20022 | Event-Driven Systems  
-Portfolio: https://rahulautade2288.github.io/
+## Diagrams
 
-A personal reference project for learning and discussing real-time payment architecture.
+The `diagrams/` folder includes the end-to-end lifecycle, the pacs.008 to posting sequence, routing decisions, the fraud workflow, Kafka event streaming and the pacs.008 message structure.
+
+![pacs.008 to fraud, routing and posting sequence](diagrams/rtp_sequence_diagram.png)
+
+## Roadmap
+
+- Persistent ledger store
+- Real Kafka producers and consumers
+- Full ISO 20022 XML and JSON marshalling with schema validation
+- Scheme-specific profiles for RTP, FedNow and SEPA Instant
+- AI-assisted fraud scoring and cost-based routing
+
+## References
+
+Official RTP, FedNow and ISO 20022 sources are listed in [docs/References.md](docs/References.md).
+
+## Disclaimer
+
+This is a learning and reference project. It is not production payment software and is not affiliated with any payment network.
+
+## Author
+
+**Rahul Autade**, Payments Modernization & Implementation Leader
+[rahulautade2288.github.io](https://rahulautade2288.github.io/) · [LinkedIn](https://www.linkedin.com/in/rahul-autade/)
